@@ -1,6 +1,6 @@
 # codetabs.el
 
-This package takes consecutive src blocks in org mode files and turn them into multi language code snippets.
+This package takes consecutive src blocks in org mode files and turn them into multi language code snippets in HTML.
 
 For example:
 
