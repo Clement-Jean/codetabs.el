@@ -1,6 +1,20 @@
 # codetabs.el
 
-Horizontally tabbed code blocks for org mode
+This package takes consecutive src blocks in org mode files and turn them into multi language code snippets.
+
+For example:
+
+``` org
+#+begin_src go
+  //...
+#+end_src
+
+#+begin_src cpp
+  //...
+#+end_src
+```
+
+will create a code snippets with horizontal tabs (go and cpp) and let you select the language you want to see the code in.
 
 ## Philosophy
 
