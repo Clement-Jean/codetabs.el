@@ -2,21 +2,23 @@
 
 (defvar codetabs-rx
   (rx (seq (group (seq "<div" (?? anything)
-	   "class=\"" (?? (not "\"")) "org-src-container" (?? (not "\"")) "\"" (?? anything)
-	   ">"))
-      (?? anything)
-      (seq "<pre" (?? anything)
-	   "class=\""
-	   (zero-or-more
-	    (or
-	     (seq "src-" (group (+ (not (or space "\"")))))
-	     (seq (+? (not (or space "\"")))))
-	    (?? space))
-	   "\">")
-      (group (+? anything))
-      "</pre>"
-      (+? anything)
-      (group "</div>"))))
+		       "class=\"" (?? (not "\"")) "org-src-container" (?? (not "\"")) "\"" (?? anything)
+		       ">"))
+	   (?? anything)
+	   (seq "<pre" (?? anything)
+		"class=\""
+		(zero-or-more
+		 (or
+		  (seq "src-" (group (+ (not (or space "\"")))))
+		  (seq (+? (not (or space "\"")))))
+		 (?? space))
+		"\""
+		(*? anything)
+		">")
+	   (group (+? anything))
+	   "</pre>"
+	   (+? anything)
+	   (group "</div>"))))
 
 (defun codetabs-sibling-regions (string start end)
   "Checks if the substring of STRING between START and END (exclusive) contains only spaces or newlines)."
