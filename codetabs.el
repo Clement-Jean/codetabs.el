@@ -19,17 +19,10 @@
       (group "</div>"))))
 
 (defun codetabs-sibling-regions (string start end)
-  "Checks if the substring of STRING between START and END (exclusive) contains only spaces or newlines (iterative)."
-  (let ((length (length string))
-        (only-whitespace-or-newline t))
-    (when (or (< start 0) (> end length) (> start end))
-      (error "Invalid indices: START=%d, END=%d, LENGTH=%d" start end length))
-    (while (and (< start end) only-whitespace-or-newline)
-      (let ((char (aref string start)))
-        (unless (or (eq char ?\s) (eq char ?\n))
-          (setq only-whitespace-or-newline nil)))
-      (cl-incf start))
-    only-whitespace-or-newline))
+  "Checks if the substring of STRING between START and END (exclusive) contains only spaces or newlines)."
+  (when (or (< start 0) (> end (length string)) (> start end))
+    (error "Invalid indices: START=%d, END=%d, LENGTH=%d" start end length))
+  (string-match-p "\\`[\s\n]*\\'" (substring string start end)))
 
 (defun codetabs-html-post-process (output backend info)
   "Identifies consecutive org-src-container divs in HTML output using regex."
