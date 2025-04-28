@@ -1,0 +1,100 @@
+body {
+    color: #000000;
+    background-color: #ffffff;
+}
+
+/* ERRORS */
+.squiggly-error { 
+  background-image:
+    linear-gradient(45deg, transparent 65%, red 80%, transparent 90%),
+    linear-gradient(135deg, transparent 5%, red 15%, transparent 25%),
+    linear-gradient(135deg, transparent 45%, red 55%, transparent 65%),
+    linear-gradient(45deg, transparent 25%, red 35%, transparent 50%);
+  background-repeat:repeat-x;
+  background-size: 8px 2.5px;
+  background-position:0 100%;
+}
+.squiggly-warning { 
+  background-image:
+    linear-gradient(45deg, transparent 65%, darkorange 80%, transparent 90%),
+    linear-gradient(135deg, transparent 5%, darkorange 15%, transparent 25%),
+    linear-gradient(135deg, transparent 45%, darkorange 55%, transparent 65%),
+    linear-gradient(45deg, transparent 25%, darkorange 35%, transparent 50%);
+  background-repeat:repeat-x;
+  background-size: 8px 2.5px;
+  background-position:0 100%;
+}
+
+/* COMMENTS */
+.org-comment {
+    /* font-lock-comment-face */
+    color: #b22222;
+}
+.org-src-container > pre.dark-mode .org-comment {
+    /* font-lock-comment-face */
+    color: lightgreen;
+}
+.org-comment-delimiter {
+    /* font-lock-comment-delimiter-face */
+    color: #b22222;
+}
+.org-src-container > pre.dark-mode .org-comment-delimiter {
+    /* font-lock-comment-face */
+    color: lightgreen;
+}
+
+/* STRINGS */
+.org-string {
+    /* font-lock-string-face */
+    color: #8b2252;
+}
+.org-src-container > pre.dark-mode .org-string {
+    /* font-lock-comment-face */
+    color: green;
+}
+
+/* CONSTANTS */
+.org-constant {
+    /* font-lock-constant-face */
+    color: #008b8b;
+}
+
+/* TYPES */
+.org-type {
+    /* font-lock-type-face */
+    color: #228b22;
+}
+
+/* FUNCTIONS */
+.org-function-name {
+    /* font-lock-function-name-face */
+    color: #0000ff;
+}
+.org-src-container > pre.dark-mode .org-function-name {
+    /* font-lock-function-name-face */
+    color: #0ff;
+}
+
+/* KEYWORDS */
+.org-keyword {
+    /* font-lock-keyword-face */
+    color: #a020f0;
+}
+
+/* CSS */
+.org-css-selector {
+    color: #0000ff;
+}
+.org-src-container > pre.dark-mode .org-css-selector {
+    color: #0ff;
+}
+
+/* MISC */
+.custom-1 {
+    color: white;
+    background-color: #0000ff;
+}
+.custom {
+    color: black;
+    background-color: #0ff;
+}

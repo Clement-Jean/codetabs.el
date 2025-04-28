@@ -1,2 +1,2 @@
 (load-file "../codetabs.el")
-(add-hook 'org-export-filter-final-output-functions 'codetabs-html-post-process)
+(advice-add 'org-html-src-block :around #'codetabs-src-block-advice)

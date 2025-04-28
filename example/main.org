@@ -1,5 +1,11 @@
+#+OPTIONS: html-postamble:nil
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="style.css" />
-#+INFOJS_OPT: path:index.js
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="org.css"/>
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="code.css"/>
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="normalize.css"/>
+#+INFOJS_OPT: path:../codetabs.js
+
+With ~codetabs~ we can either get tabs names after the org babel language like so:
 
 #+begin_src go
   func main() {
@@ -10,23 +16,86 @@
   int main() { return 0; }
 #+end_src
 
-we have some text here
+or we can rename them with a simple ~#+name~:
+
+#+name: main.go
+#+begin_src go
+  func main() {
+  }
+#+end_src
+
+#+name: main.cc
+#+begin_src cpp
+  int main() { return 0; }
+#+end_src
+
+For single ~src-blocks~, it is similar:
 
 #+begin_src shell
   ls
 #+end_src
 
-and here too
+We can also skip some blocks. For example, the BQN block is consecutive but uses the attr ~:skip~:
 
+#+name: C++
 #+begin_src cpp
-std::cout << "hello" << std::endl;
+  std::cout << "hello" << std::endl;
 #+end_src
 
+#+name: Python
 #+begin_src python
-  def test:
-      print(1)
+  def test():
+     print(1)
 #+end_src
 
+#+attr_codetabs: :skip t
 #+begin_src bqn
   <⟜'a'⊸/ "Big Questions Notation"
+#+end_src
+
+#+begin_src C++
+  std::cout << "world" << std::endl;
+#+end_src
+
+#+name: Python
+#+begin_src python
+  def test():
+     print(2)
+#+end_src
+
+And it also work for single ~src-blocks~:
+
+#+attr_codetabs: :skip t
+#+begin_src shell
+  ls
+#+end_src
+
+Also, you with ~org-html-htmlize-output-type~ set to ~css~ you can customize your CSS to make any token the color you want (see the function name difference in light and dark theme):
+
+#+begin_src go
+  func main() {
+  }
+#+end_src
+
+This is just done like so:
+
+#+begin_src css
+  .org-function-name {
+    /* font-lock-function-name-face */
+    color: #0000ff;
+  }
+  .org-src-container > pre.dark-mode .org-function-name {
+    /* font-lock-function-name-face */
+    color: #0ff;
+  }
+#+end_src
+
+By using the ~:emphasize~ attr we can also define the styling for a given portion of code:
+
+#+attr_codetabs: :emphasize ((⟜ ⊸ squiggly-error)(⊢ ⊣ squiggly-warning))
+#+begin_src go
+  func main() {
+    fmt.Printf("%d\n", ⟜"I pass a string"⊸)
+    fmt.Printf(⊢"%d\n"⊣)
+  }
 #+end_src

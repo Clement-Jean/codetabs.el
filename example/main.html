@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2025-04-25 Fri 13:27 -->
+<!-- 2025-04-28 Mon 12:51 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>&lrm;</title>
@@ -194,8 +194,11 @@
   .org-svg { }
 </style>
 <link rel="stylesheet" type="text/css" href="style.css" />
+<link rel="stylesheet" type="text/css" href="org.css"/>
+<link rel="stylesheet" type="text/css" href="code.css"/>
+<link rel="stylesheet" type="text/css" href="normalize.css"/>
 
-<script src="index.js">
+<script src="../codetabs.js">
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 // @license-end
 </script>
@@ -217,11 +220,78 @@ org_html_manager.setup();  // activate after the parameters are set
 </head>
 <body>
 <div id="content" class="content">
-<div class="code-tabs"><div class="tab-controls"><button class="tab-button" data-lang="go">go</button><button class="tab-button" data-lang="cpp">cpp</button></div><div class="tab-content" id="go"><pre class="src src-go"><code>func main() {
-}</code></pre></div><div class="tab-content" id="cpp"><pre class="src src-cpp"><code>int main() { return 0; }</code></pre></div></div>
+<p>
+With <code>codetabs</code> we can either get tabs names after the org babel language like so:
+</p>
+
+<div lang="go" class="org-src-container">
+ <pre class="src src-go"><span class="org-keyword">func</span> <span class="org-function-name">main</span>() {
+}
+</pre>
+</div>
+
+<div lang="cpp" class="org-src-container">
+ <pre class="src src-cpp"><span class="org-type">int</span> <span class="org-function-name">main</span>() { <span class="org-keyword">return</span> 0; }
+</pre>
+</div>
 
 <p>
-we have some text here
+or we can rename them with a simple <code>#+name</code>:
+</p>
+
+<div name="main.go" lang="go" class="org-src-container">
+ <pre class="src src-go" id="org54b9ea2"><span class="org-keyword">func</span> <span class="org-function-name">main</span>() {
+}
+</pre>
+</div>
+
+<div name="main.cc" lang="cpp" class="org-src-container">
+ <pre class="src src-cpp" id="org07e66ff"><span class="org-type">int</span> <span class="org-function-name">main</span>() { <span class="org-keyword">return</span> 0; }
+</pre>
+</div>
+
+<p>
+For single <code>src-blocks</code>, it is similar:
+</p>
+
+<div lang="shell" class="org-src-container">
+ <pre class="src src-shell">ls
+</pre>
+</div>
+
+<p>
+We can also skip some blocks. For example, the BQN block is consecutive but uses the attr <code>:skip</code>:
+</p>
+
+<div name="C++" lang="cpp" class="org-src-container">
+ <pre class="src src-cpp" id="orge12e162"><span class="org-constant">std</span>::cout << <span class="org-string">"hello"</span> << <span class="org-constant">std</span>::endl;
+</pre>
+</div>
+
+<div name="Python" lang="python" class="org-src-container">
+ <pre class="src src-python" id="orgd90bcdc"><span class="org-keyword">def</span> <span class="org-function-name">test</span>():
+   <span class="org-builtin">print</span>(1)
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-bqn"><span class="org-bqn-primitive-function">&lt;</span><span class="org-bqn-primitive-two-modifier">&#10204;</span><span class="org-string">'a'</span><span class="org-bqn-primitive-two-modifier">&#8888;</span><span class="org-bqn-primitive-function">/</span> <span class="org-string">"Big Questions Notation"</span>
+</pre>
+</div>
+
+<div lang="C++" class="org-src-container">
+ <pre class="src src-C++"><span class="org-constant">std</span>::cout << <span class="org-string">"world"</span> << <span class="org-constant">std</span>::endl;
+</pre>
+</div>
+
+<div name="Python" lang="python" class="org-src-container">
+ <pre class="src src-python" id="org70c83cd"><span class="org-keyword">def</span> <span class="org-function-name">test</span>():
+   <span class="org-builtin">print</span>(2)
+</pre>
+</div>
+
+<p>
+And it also work for single <code>src-blocks</code>:
 </p>
 
 <div class="org-src-container">
@@ -230,16 +300,42 @@ we have some text here
 </div>
 
 <p>
-and here too
+Also, you with <code>org-html-htmlize-output-type</code> set to <code>css</code> you can customize your CSS to make any token the color you want (see the function name difference in light and dark theme):
 </p>
 
-<div class="code-tabs"><div class="tab-controls"><button class="tab-button" data-lang="cpp">cpp</button><button class="tab-button" data-lang="python">python</button><button class="tab-button" data-lang="bqn">bqn</button></div><div class="tab-content" id="cpp"><pre class="src src-cpp"><code>std::cout &lt;&lt; "hello" &lt;&lt; std::endl;</code></pre></div><div class="tab-content" id="python"><pre class="src src-python"><code>def test:
-    print(1)</code></pre></div><div class="tab-content" id="bqn"><pre class="src src-bqn"><code>&lt;⟜'a'⊸/ "Big Questions Notation"</code></pre></div></div>
+<div lang="go" class="org-src-container">
+ <pre class="src src-go"><span class="org-keyword">func</span> <span class="org-function-name">main</span>() {
+}
+</pre>
 </div>
-<div id="postamble" class="status">
-<p class="author">Author: Clement</p>
-<p class="date">Created: 2025-04-25 Fri 13:27</p>
-<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+
+<p>
+This is just done like so:
+</p>
+
+<div lang="css" class="org-src-container">
+ <pre class="src src-css"><span class="org-css-selector">.org-function-name</span> {
+  <span class="org-comment-delimiter">/* </span><span class="org-comment">font-lock-function-name-face</span><span class="org-comment-delimiter"> */</span>
+  <span class="org-css-property">color</span>: <span class="custom-1">#0000ff</span>;
+}
+<span class="org-css-selector">.org-src-container > pre.dark-mode .org-function-name</span> {
+  <span class="org-comment-delimiter">/* </span><span class="org-comment">font-lock-function-name-face</span><span class="org-comment-delimiter"> */</span>
+  <span class="org-css-property">color</span>: <span class="custom">#0ff</span>;
+}
+</pre>
+</div>
+
+<p>
+By using the <code>:emphasize</code> attr we can also define the styling for a given portion of code:
+</p>
+
+<div emphasize-class="squiggly-error,squiggly-warning" emphasize-end="⊸,⊣" emphasize-start="⟜,⊢" lang="go" class="org-src-container">
+ <pre class="src src-go"><span class="org-keyword">func</span> <span class="org-function-name">main</span>() {
+  fmt.<span class="org-function-name">Printf</span>(<span class="org-string">"%d\n"</span>, ⟜<span class="org-string">"I pass a string"</span>⊸)
+  fmt.<span class="org-function-name">Printf</span>(⊢<span class="org-string">"%d\n"</span>⊣)
+}
+</pre>
+</div>
 </div>
 </body>
 </html>
