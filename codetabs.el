@@ -1,91 +1,55 @@
 (require 'org)
 
-(defvar codetabs-rx
-  (rx (seq (group (seq "<div" (?? anything)
-		       "class=\"" (?? (not "\"")) "org-src-container" (?? (not "\"")) "\"" (?? anything)
-		       ">"))
-	   (?? anything)
-	   (seq "<pre" (?? anything)
-		"class=\""
-		(zero-or-more
-		 (or
-		  (seq "src-" (group (+ (not (or space "\"")))))
-		  (seq (+? (not (or space "\"")))))
-		 (?? space))
-		"\""
-		(*? anything)
-		">")
-	   (group (+? anything))
-	   "</pre>"
-	   (+? anything)
-	   (group "</div>"))))
+(defun codetabs-parse-list-from-string (string-representation)
+  "Parses a list from its string representation.
+  STRING-REPRESENTATION should be a valid Elisp list string."
+  (with-temp-buffer
+    (insert string-representation)
+    (goto-char (point-min))
+    (read (current-buffer))))
 
-(defun codetabs-sibling-regions (string start end)
-  "Checks if the substring of STRING between START and END (exclusive) contains only spaces or newlines)."
-  (when (or (< start 0) (> end (length string)) (> start end))
-    (error "Invalid indices: START=%d, END=%d, LENGTH=%d" start end length))
-  (string-match-p "\\`[\s\n]*\\'" (substring string start end)))
+(defun codetabs-extract-elements-from-string-list (string-list)
+  "Parses a list of lists from a string and extracts elements into separate strings."
+  (let ((parsed-list (codetabs-parse-list-from-string string-list))
+        (first-elements "")
+        (second-elements "")
+        (third-elements ""))
+    (dolist (sublist parsed-list)
+      (when (>= (length sublist) 1)
+        (setq first-elements (concat first-elements (format "%s," (car sublist)))))
+      (when (>= (length sublist) 2)
+        (setq second-elements (concat second-elements (format "%s," (nth 1 sublist)))))
+      (when (>= (length sublist) 3)
+        (setq third-elements (concat third-elements (format "%s," (nth 2 sublist))))))
+    (list (string-trim-right first-elements ",")
+          (string-trim-right second-elements ",")
+          (string-trim-right third-elements ","))))
 
-(defun codetabs-html-post-process (output backend info)
-  "Identifies consecutive org-src-container divs in HTML output using regex."
-  (when (eq backend 'html)
-    (let ((search-position 0)
-          (blocks '())
-	  (grouped-blocks '()))
-      (while (string-match codetabs-rx output search-position)
-        (let ((start (match-beginning 0))
-	      (end (match-end 4))
-              (lang (match-string 2 output))
-	      (code (match-string 3 output)))
-	  (add-to-list 'blocks (list :lang lang :code code :start start :end end) t)
-          (setq search-position end)))
+(defun codetabs-src-block-advice (oldfun src-block contents info)
+  (let ((old-ret (funcall oldfun src-block contents info))
+	(lang (org-element-property :language src-block))
+	(name (org-element-property :name src-block))
+	(skip (org-export-read-attribute :attr_codetabs src-block :skip))
+	(emphasize (org-export-read-attribute :attr_codetabs src-block :emphasize)))
+    (if (not skip)
+	(with-temp-buffer
+	  (insert old-ret)
+	  (let* ((html (libxml-parse-html-region (point-min) (point)))
+		 (div (elt (elt html 2) 2)))
+	    (push `(lang . ,lang) (elt div 1))
+	    (when name
+	      (push `(name . ,name) (elt div 1)))
+	    (when emphasize
+	      (let* ((res (codetabs-extract-elements-from-string-list emphasize))
+		     (starts (nth 0 res))
+		     (ends (nth 1 res))
+		     (classes (nth 2 res)))
+		(push `("emphasize-start" . ,starts) (elt div 1))
+		(push `("emphasize-end" . ,ends) (elt div 1))
+		(push `("emphasize-class" . ,classes) (elt div 1))))
+	    (erase-buffer)
+	    (shr-dom-print div)
+	    (replace-regexp-in-string (rx (seq " " "<span")) "<span" (buffer-string))))
+      old-ret)))
 
-      (let ((current-group '())
-            (current-end 0))
-        (dolist (block blocks)
-          (let ((block-start (plist-get block :start)))
-            (if (or (not current-group)
-                    (codetabs-sibling-regions output current-end block-start))
-		(add-to-list 'current-group block t)
-		(when current-group
-		  (add-to-list 'grouped-blocks current-group t)
-                  (setq current-group (list block))))
-            (setq current-end (plist-get block :end))))
-        (when current-group
-	  (add-to-list 'grouped-blocks current-group t)))
-
-      (let ((new-output output)
-	    (offset 0))
-	(dolist (group grouped-blocks)
-	  (if (> (length group) 1)
-	      (let ((tab-headers "")
-		    (tab-contents "")
-		    (first-start (plist-get (car group) :start))
-		    (last-end (plist-get (car (last group)) :end)))
-		(dolist (block group)
-		  (let ((lang (plist-get block :lang))
-			(code (plist-get block :code)))
-		    (setq tab-headers
-			  (concat tab-headers
-				  (format "<button class=\"tab-button\" data-lang=\"%s\">%s</button>"
-					  lang lang)))
-		    (setq tab-contents
-			  (concat tab-contents
-				  (format "<div class=\"tab-content\" id=\"%s\"><pre class=\"src src-%s\"><code>%s</code></pre></div>"
-					  lang lang (string-trim code))))))
-		(let ((tab-html (format "<div class=\"code-tabs\"><div class=\"tab-controls\">%s</div>%s</div>" tab-headers tab-contents))
-		      (replace-start (+ offset first-start))
-		      (replace-end (+ offset last-end)))
-
-		  (setq replaced-length (- replace-end replace-start))
-		  (setq replacement-length (length tab-html))
-
-		  (setq new-output
-			(concat (substring new-output 0 replace-start)
-				tab-html
-				(substring new-output replace-end)))
-
-		  (setq offset (+ offset replacement-length (- replaced-length)))))))
-	  new-output))))
-
-(provide 'codetabs-html-post-process)
+(provide 'codetabs-src-block-advice)
