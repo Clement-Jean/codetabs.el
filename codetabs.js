@@ -18,7 +18,7 @@ function addTabsFor(content, srcBlocks) {
     if (srcBlocks.length < 1) {
 	return null;
     }
-    
+
     const codetab = document.createElement('div');
     const controls = document.createElement('div');
 
@@ -48,7 +48,7 @@ function addTabsFor(content, srcBlocks) {
 		pre.innerHTML = pre.innerHTML.replace(ends[i], '</span>')
 	    }
 	}
-	
+
 	controls.appendChild(tab);
 	block.classList.add('tab-content');
     }
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const preElements = document.querySelectorAll('.tab-content pre');
     const DARK_MODE_CLASS = 'dark-mode';
     const THEME_KEY = 'codeTheme';
-    
+
     preElements.forEach(pre => {
         const toggle = document.createElement('span');
         toggle.classList.add('theme-toggle-icon');
