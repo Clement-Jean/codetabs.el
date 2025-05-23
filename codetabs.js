@@ -53,7 +53,8 @@ function addTabsFor(content, srcBlocks) {
 	block.classList.add('tab-content');
     }
 
-    content.insertBefore(codetab, srcBlocks[0]);
+    const parent = srcBlocks[0].parentElement;
+    parent.insertBefore(codetab, srcBlocks[0]);
     codetab.appendChild(controls);
     srcBlocks.map((block) => codetab.appendChild(block));
     return codetab;
